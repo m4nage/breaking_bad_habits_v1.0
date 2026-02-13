@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Breaking Bad Habits
+Comment=Stay focused and track your habits
+Exec=breakingbadhabits
+Icon=security-high
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=true

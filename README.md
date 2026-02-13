@@ -1,6 +1,3 @@
-# breaking_bad_habits_v1.0
-Breaking Bad Habits: A Linux tool to block explicit content and build better routines. It   leverages the StevenBlack porn blocklist to modify /etc/hosts and enforce browser policies.   Features include a progress tracker, system tray integration, and a 60s security timer for   deactivation.
-
 # Breaking Bad Habits
 
 A robust Linux tool to aid in behavioral change. It combines system-level blocking with activity monitoring and workout reminders.
@@ -20,7 +17,7 @@ A robust Linux tool to aid in behavioral change. It combines system-level blocki
 ### Option 1: Debian/Ubuntu (Recommended)
 This will install the app system-wide and add it to your application menu.
 ```bash
-sudo apt install (((/location/to/file/folder)))./breakingbadhabits_1.0.deb
+sudo apt install ./breakingbadhabits_1.0.deb
 ```
 
 ### Option 2: Portable/Developer Mode
@@ -36,7 +33,6 @@ pip install -r requirements.txt
 
 ### 1. Start the Application
 - **Installed via .deb:** Search for **"Breaking Bad Habits"** in your applications menu or type `breakingbadhabits` in the terminal.
------------------------------------------------------
 - **Portable:** Run `./launch.sh`.
 
 ### 2. System Tray & Hiding

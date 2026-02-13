@@ -1,0 +1,49 @@
+# Breaking Bad Habits - Technical Design Document
+
+## 1. Core Philosophy
+The application aims to provide a robust Linux tool to aid in behavioral change. It distinguishes itself by addressing the "VPN Bypass" loophole common in router-based blocking (like OPNsense).
+
+## 2. The "VPN Bypass" Solution: Hosts File Injection
+Standard blocking via DNS (e.g., 1.1.1.3) or Router Rules is easily bypassed by turning on a VPN, which tunnels DNS traffic to the VPN provider.
+
+**The Fix: System-Level Hosts File Enforcement**
+Instead of relying on upstream DNS, we will enforce blocking at the **Operating System level**, which takes precedence over network adapters (including VPN virtual adapters).
+
+*   **Mechanism:** The application will manage the system's local hosts file:
+    *   **Linux:** `/etc/hosts`
+*   **Data Source:** We will utilize the StevenBlack Unified Hosts List (Porn Variant).
+    *   *URL:* `https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts`
+*   **How it Works:**
+    1.  The OS Name Resolution order typically checks the `hosts` file *before* querying any DNS server.
+    2.  If `pornhub.com` is defined as `0.0.0.0` in the hosts file, the OS immediately resolves it to null.
+    3.  The browser receives a "Connection Failed" error instantly.
+    4.  Because this happens *before* the network packet is formed, the **VPN tunnel is never entered** for that request. The block persists regardless of network state.
+
+## 3. Secondary Defense: Anti-Circumvention
+To ensure the Hosts file strategy is effective, we must close other loopholes:
+
+*   **Block DNS-over-HTTPS (DoH):** Modern browsers (Chrome, Firefox) can be configured to ignore the OS DNS and Hosts file by using DoH.
+    *   *Action:* The app enforces browser policies (via JSON policies on Linux) to disable DoH and block VPN extensions.
+*   **File Integrity Monitoring:** The app must "watch" the hosts file. If the user tries to edit it manually to remove blocks, the app should immediately revert the changes.
+
+## 4. Behavioral Health Features
+*   **Hourly Activity Monitor:**
+    *   Tracks active mouse/keyboard usage.
+    *   **Trigger:** After 60 minutes of cumulative activity.
+    *   **Action:** Displays an "Always-on-Top" widget or window.
+    *   **Requirement:** Prompts for a 5-10 minute physical workout (e.g., Pushups, Squats, Dumbbells).
+*   **Panic Button:**
+    *   System Tray accessibility.
+    *   Activates "Emergency Mode": Visual breathing exercises, motivational quotes, or distracting mini-game.
+
+## 5. Self-Preservation (Anti-Uninstall)
+*   **Privileged Service:** Core blocking logic runs via `pkexec` to modify system files.
+*   **Deactivation Timer:** Turning off protection requires waiting 60 seconds (or more) to prevent impulsive relapses.
+*   **Process Watchdog:** The service runs in the background and can be set to autostart.
+
+## 6. Technical Stack
+*   **Language:** Python 3.10+
+*   **GUI Framework:** CustomTkinter (Modern look, wraps Tkinter)
+*   **System Tray:** `pystray`
+*   **OS Interaction:** `os`, `subprocess`, `platform` standard libraries.
+*   **Networking:** `requests` (to fetch the blocklist).
